@@ -1,11 +1,7 @@
 package Lab3;
 
-import java.util.TreeSet;
-
 public class PagesTable {
-	private int[] table;
-	private int[] age;
-	private boolean[] isUsed;
+	private PagesTableRecord[] table;
 	
 	private int pagesCountCanOperate;
 	private int currentPagesCount = 0;
@@ -13,36 +9,31 @@ public class PagesTable {
 	public PagesTable(int pagesCountAll, int pagesCountCanOperate) {
 		this.pagesCountCanOperate = pagesCountCanOperate;
 		
-		table = new int[pagesCountAll];
-		age = new int[pagesCountAll];
-		isUsed = new boolean[pagesCountAll];
-		
+		table = new PagesTableRecord[pagesCountAll];
 		for (int i = 0; i < pagesCountAll; i++) {
-			table[i] = -1;
-			age[i] = 0;
-			isUsed[i] = false;
+			table[i] = new PagesTableRecord();
 		}
 	}
 	
 	public void usingPage(int index) {
-		isUsed[index] = true;
+		table[index].setIsUsed(true);
 	}
 	
 	public void nextCicle() {
-		for (int i = 0; i < isUsed.length; i++) {
-			if (table[i] >= 0) {
-				age[i] /= 2;
+		for (int i = 0; i < table.length; i++) {
+			if (table[i].getPageNumber() >= 0) {
+				table[i].setAge(table[i].getAge() / 2);
 				
-				if (isUsed[i]) {
-					age[i] += 256;
-					isUsed[i] = false;
+				if (table[i].getIsUsed()) {
+					table[i].setAge(table[i].getAge() + 256);
+					table[i].setIsUsed(false);
 				}
 			}
 		}
 	}
 	
 	public int getMap(int index) {
-		return table[index];
+		return table[index].getPageNumber();
 	}
 	
 	public int getLessDemandedPageNumber() {
@@ -50,7 +41,7 @@ public class PagesTable {
 		
 		if (!isFullUsed()) {
 			for (int i = 0; i < table.length; i++) {
-				if (table[i] == -1) {
+				if (table[i].getPageNumber() == -1) {
 					lessDemandedPageNumber = i;
 					break;
 				}
@@ -59,10 +50,10 @@ public class PagesTable {
 			int min = 512;
 			int numMin = -1;
 			
-			for (int i = 0; i < isUsed.length; i++) {
-				if (table[i] >= 0) {
-					if (age[i] < min) {
-						min = age[i];
+			for (int i = 0; i < table.length; i++) {
+				if (table[i].getPageNumber() >= 0) {
+					if (table[i].getAge() < min) {
+						min = table[i].getAge();
 						numMin = i;
 					}
 				}
@@ -75,9 +66,9 @@ public class PagesTable {
 	}
 	
 	public void set(int index, int value) {
-		table[index] = value;
-		age[index] = 0;
-		isUsed[index] = false;
+		table[index].setPageNumber(value);
+		table[index].setAge(0);
+		table[index].setIsUsed(false);
 		
 		if (!isFullUsed()) {
 			currentPagesCount++;
@@ -85,9 +76,9 @@ public class PagesTable {
 	}
 	
 	public void reset(int index) {
-		table[index] = -1;
-		age[index] = 0;
-		isUsed[index] = false;
+		table[index].setPageNumber(-1);
+		table[index].setAge(0);
+		table[index].setIsUsed(false);
 	}
 	
 	public boolean isFullUsed() {
@@ -99,8 +90,8 @@ public class PagesTable {
 		boolean[] isOccupied = new boolean[pagesCountCanOperate];
 		
 		for (int i = 0; i < table.length; i++) {
-			if (table[i] != -1) {
-				isOccupied[table[i]] = true;
+			if (table[i].getPageNumber() != -1) {
+				isOccupied[table[i].getPageNumber()] = true;
 			}
 		}
 		

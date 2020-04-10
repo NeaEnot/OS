@@ -11,7 +11,7 @@ public class Memory {
 		pages = new Page[pagesCount];
 		for (int i = 0; i < pagesCount; i++) {
 			int pageNumber = isClear? -1 : i;
-			pages[i] = new Page(pageNumber, pageSize);
+			pages[i] = new Page(pageNumber);
 		}
 	}
 	

@@ -1,12 +1,10 @@
 package Lab3;
 
 public class Page {
-	private int size;
 	private int number;
 	
-	public Page(int number, int size) {
+	public Page(int number) {
 		this.number = number;
-		this.size = size;
 	}
 	
 	public int getNumber() {
