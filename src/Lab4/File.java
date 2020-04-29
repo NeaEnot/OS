@@ -5,31 +5,26 @@ import java.util.ArrayList;
 public class File {
 	private String name;
 	private String extension;
-
-	private ArrayList<Integer> sectorsNumbers;
+	
+	private Node node;
 	
 	public File(String name, String extension) {
 		this.name = name;
 		this.extension = extension;
 		
-		sectorsNumbers = new ArrayList<Integer>();
+		node = new Node();
 	}
 	
 	public void addSectorNumber(int number) {
-		sectorsNumbers.add(number);
+		node.addSectorNumber(number);
 	}
 	
-	public void removeSectorNumber(int number) {
-		for (int i = 0; i < sectorsNumbers.size(); i++) {
-			if (sectorsNumbers.get(i) == number) {
-				sectorsNumbers.remove(i);
-				break;
-			}
-		}
+	public void removeSectorsNumbers(int count) {
+		node.removeSectorsNumbers(count);
 	}
 	
 	public ArrayList<Integer> getSectorsNumbers() {
-		return (ArrayList<Integer>) sectorsNumbers.clone();
+		return node.getSectorsNumbers();
 	}
 	
 	public String getName() {

@@ -123,6 +123,11 @@ public class FileManager {
 		}
 		
 		String[] fullFileNameStruct = getFullFileNameStruct(dest, true);
+		
+		if (!fileSystem.isFileExist(fullFileNameStruct[0], fullFileNameStruct[1], fullFileNameStruct[2])) {
+			throw new Exception("catalog is not exist");
+		}
+		
 		currentCatalog = fullFileNameStruct[0] + fullFileNameStruct[1];
 		if (!currentCatalog.endsWith(">")) {
 			currentCatalog += ">";
@@ -133,12 +138,22 @@ public class FileManager {
 	
 	private void readFile(String name) throws Exception {
 		String[] fullFileNameStruct = getFullFileNameStruct(name, false);
+		
+		if (!fileSystem.isFileExist(fullFileNameStruct[0], fullFileNameStruct[1], fullFileNameStruct[2])) {
+			throw new Exception("file is not exist");
+		}
+		
 		System.out.println(fileSystem.read(fullFileNameStruct[0],  fullFileNameStruct[1], fullFileNameStruct[2]));
 		monitor.touchFile(fullFileNameStruct[0],  fullFileNameStruct[1], fullFileNameStruct[2]);
 	}
 	
 	private void writeToFile(String name, String data) throws Exception {
 		String[] fullFileNameStruct = getFullFileNameStruct(name, false);
+		
+		if (!fileSystem.isFileExist(fullFileNameStruct[0], fullFileNameStruct[1], fullFileNameStruct[2])) {
+			throw new Exception("file is not exist");
+		}
+		
 		fileSystem.write(fullFileNameStruct[0],  fullFileNameStruct[1], fullFileNameStruct[2], data);
 		monitor.touchFile(fullFileNameStruct[0],  fullFileNameStruct[1], fullFileNameStruct[2]);
 	}
@@ -154,6 +169,10 @@ public class FileManager {
 		String[] fullFileFromNameStruct = getFullFileNameStruct(nameFrom, isCatalogFrom);
 		String[] fullFileToNameStruct = getFullFileNameStruct(nameTo, isCatalogTo);
 		
+		if (!fileSystem.isFileExist(fullFileFromNameStruct[0], fullFileFromNameStruct[1], fullFileFromNameStruct[2])) {
+			throw new Exception("file or catalog is not exist");
+		}
+		
 		fileSystem.copy(fullFileFromNameStruct[0],  fullFileFromNameStruct[1], fullFileFromNameStruct[2],
 						fullFileToNameStruct[0],  fullFileToNameStruct[1], fullFileToNameStruct[2]);
 		monitor.touchFile(fullFileToNameStruct[0],  fullFileToNameStruct[1], fullFileToNameStruct[2]);
@@ -165,6 +184,10 @@ public class FileManager {
 		String[] fullFileFromNameStruct = getFullFileNameStruct(nameFrom, isCatalog);
 		String[] fullFileToNameStruct = getFullFileNameStruct(nameTo, isCatalog);
 		
+		if (!fileSystem.isFileExist(fullFileFromNameStruct[0], fullFileFromNameStruct[1], fullFileFromNameStruct[2])) {
+			throw new Exception("file or catalog is not exist");
+		}
+		
 		fileSystem.relocate(fullFileFromNameStruct[0],  fullFileFromNameStruct[1], fullFileFromNameStruct[2],
 						fullFileToNameStruct[0],  fullFileToNameStruct[1]);
 		monitor.touchFile(fullFileToNameStruct[0],  fullFileToNameStruct[1], fullFileFromNameStruct[2]);
@@ -173,6 +196,11 @@ public class FileManager {
 	private void remove(String name) throws Exception {
 		boolean isCatalog = !name.contains(":");
 		String[] fullFileNameStruct = getFullFileNameStruct(name, isCatalog);
+		
+		if (!fileSystem.isFileExist(fullFileNameStruct[0], fullFileNameStruct[1], fullFileNameStruct[2])) {
+			throw new Exception("file or catalog is not exist");
+		}
+		
 		fileSystem.remove(fullFileNameStruct[0],  fullFileNameStruct[1], fullFileNameStruct[2]);
 		
 		fullFileNameStruct = getFullFileNameStruct(currentCatalog, true);
@@ -206,22 +234,26 @@ public class FileManager {
 	
 	private void show() throws Exception {
 		String[] fullFileNameStruct = getFullFileNameStruct(currentCatalog, true);
-		String[] keys = fileSystem.read(fullFileNameStruct[0],  fullFileNameStruct[1], fullFileNameStruct[2]).split(":");
+		String[] names = fileSystem.read(fullFileNameStruct[0],  fullFileNameStruct[1], fullFileNameStruct[2]).split(";");
 
 		System.out.println();
-		for (int i = 0; i < keys.length; i++) {
-			if (!keys[i].isEmpty()) {
-				System.out.println(fileSystem.getFileExName(Integer.parseInt(keys[i])));
+		for (int i = 0; i < names.length; i++) {
+			if (!names[i].isEmpty()) {
+				System.out.println(names[i]);
 			}
 		}
 		System.out.println();
 	}
 	
 	private String[] getFullFileNameStruct(String name, boolean isCatalog) throws Exception {
+		if (name.contains(";")) {
+			throw new Exception("wrong format: you can not use ';'");
+		}
+		
 		String[] answer = new String[3];
 		
 		if (name.equals(">")) {
-			answer[0] = ">";
+			answer[0] = "";
 			answer[1] = "";
 			answer[2] = "";
 		} else {		

@@ -46,7 +46,7 @@ public class FormMonitor {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		FileSystem fileSystem = new FileSystem(1024, 8);
+		FileSystem fileSystem = new FileSystem(1024, 16);
 		FileSystemMonitor fileSystemMonitor = new FileSystemMonitor(fileSystem);
 		FileManager fileManager = new FileManager(fileSystem, fileSystemMonitor);
 		
